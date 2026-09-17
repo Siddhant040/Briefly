@@ -8,6 +8,13 @@
       "when": 1789649501396,
       "tag": "0000_silent_thor",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789659086446,
+      "tag": "0001_equal_lionheart",
+      "breakpoints": true
     }
   ]
 }
