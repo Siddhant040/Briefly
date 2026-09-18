@@ -6,6 +6,7 @@ import {db} from "./db/index.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import userRoutes from "./modules/Users/Users.routes.js";
 import noteRoutes from "./modules/Notes/Notes.routes.js";
+import shareRoutes from "./modules/Shares/Shares.routes.js";
 
 
 const app = new Hono();
@@ -13,6 +14,7 @@ app.onError(errorHandler);
 
 app.route("/auth", userRoutes);
 app.route("/notes", noteRoutes);
+app.route("/share", shareRoutes);
 app.get("/db-health", async(c)=>{
     try {
         await db.execute("SELECT 1")

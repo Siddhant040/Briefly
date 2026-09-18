@@ -15,6 +15,13 @@
       "when": 1789659086446,
       "tag": "0001_equal_lionheart",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789699048023,
+      "tag": "0002_amusing_lyja",
+      "breakpoints": true
     }
   ]
 }
