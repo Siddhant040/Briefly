@@ -189,10 +189,8 @@ export const accessProtectedShare = async (c: Context) => {
     );
   }
 
-  if (
-    share.shareType !== "time_based" ||
-    share.accessType !== "password"
-  ) {
+  // Protected shares must use password access.
+  if (share.accessType !== "password") {
     throw new ApiError(
       "Unsupported share type",
       400,
@@ -213,13 +211,23 @@ export const accessProtectedShare = async (c: Context) => {
     );
   }
 
-  const updatedShare = await recordTimeBasedView(share.id);
+  let updatedShare;
+
+  if (share.shareType === "one_time") {
+    updatedShare = await consumeOneTimeShare(share.id);
+  } else {
+    updatedShare = await recordTimeBasedView(share.id);
+  }
 
   if (!updatedShare) {
     throw new ApiError(
-      "Share has expired or is no longer available",
+      share.shareType === "one_time"
+        ? "This share has already been used or is no longer available"
+        : "Share has expired or is no longer available",
       410,
-      "SHARE_EXPIRED",
+      share.shareType === "one_time"
+        ? "SHARE_ALREADY_USED"
+        : "SHARE_EXPIRED",
     );
   }
 
