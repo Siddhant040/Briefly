@@ -1,7 +1,7 @@
 import type { Context } from "hono";
 
 import { createNoteSchema , updateNoteSchema} from "./Notes.validation.js";
-import { createNote , getNoteById, updateNote,deleteNote} from "./Notes.service.js";
+import { createNote , getNoteById, updateNote,deleteNote,getNotes} from "./Notes.service.js";
 
 import { ApiError } from "../../utils/api-error.js";
 import { ApiResponse } from "../../utils/api-response.js";
@@ -71,6 +71,19 @@ export const getById = async (c: Context) => {
     ApiResponse.success(
       "Note fetched successfully",
       note,
+    ),
+  );
+};
+
+export const getAll = async (c: Context) => {
+  const user = c.get("user");
+
+  const notes = await getNotes(user.id);
+
+  return c.json(
+    ApiResponse.success(
+      "Notes fetched successfully",
+      notes,
     ),
   );
 };

@@ -1,6 +1,6 @@
 import { db } from "../../db/index.js";
 import { notes } from "./Notes.schema.js";
-import { eq, and } from "drizzle-orm";
+import { desc ,eq, and } from "drizzle-orm";
 export const createNote = async (
   userId: string,
   title: string,
@@ -76,4 +76,19 @@ export const deleteNote = async (
     });
 
   return note ?? null;
+};
+
+export const getNotes = async (userId: string) => {
+  const userNotes = await db
+    .select({
+      id: notes.id,
+      title: notes.title,
+      createdAt: notes.createdAt,
+      updatedAt: notes.updatedAt,
+    })
+    .from(notes)
+    .where(eq(notes.userId, userId))
+    .orderBy(desc(notes.updatedAt));
+
+  return userNotes;
 };
