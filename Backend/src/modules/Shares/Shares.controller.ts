@@ -1,7 +1,14 @@
 import type { Context } from "hono";
 
 import { createShareSchema, accessShareSchema } from "./Shares.validations.js";
-import { createShare, findShareByToken, consumeOneTimeShare,recordTimeBasedView,revokeShare } from "./Shares.service.js";
+import { 
+  createShare,
+   findShareByToken,
+    consumeOneTimeShare,
+    recordTimeBasedView,
+    revokeShare,
+    getSharesByNoteId
+   } from "./Shares.service.js";
 import {verifyShareAccessKey} from "./Shares.security.js";
 
 import { ApiError } from "../../utils/api-error.js";
@@ -277,6 +284,32 @@ export const revoke = async (c: Context) => {
         id: share.id,
         revokedAt: share.revokedAt,
       },
+    ),
+  );
+};
+
+export const getByNoteId = async (c: Context) => {
+  const noteId = c.req.param("id");
+
+  if (!noteId) {
+    throw new ApiError(
+      "Note ID is required",
+      400,
+      "NOTE_ID_REQUIRED",
+    );
+  }
+
+  const user = c.get("user");
+
+  const shares = await getSharesByNoteId(
+    noteId,
+    user.id,
+  );
+
+  return c.json(
+    ApiResponse.success(
+      "Shares fetched successfully",
+      shares,
     ),
   );
 };

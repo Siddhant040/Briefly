@@ -1,6 +1,6 @@
 import { db } from "../../db/index.js";
 import { shares } from "./Shares.schema.js";
-import { and, eq, gt, isNull,sql } from "drizzle-orm";
+import { and, eq, gt, isNull,sql ,desc} from "drizzle-orm";
 import { hashPassword } from "../Users/Users.security.js";
 import { notes } from "../Notes/Notes.schema.js";
 import {
@@ -151,4 +151,31 @@ export const revokeShare = async (
     .returning();
 
   return revokedShare ?? null;
+};
+
+export const getSharesByNoteId = async (
+  noteId: string,
+  userId: string,
+) => {
+  const result = await db
+    .select({
+      id: shares.id,
+      shareType: shares.shareType,
+      accessType: shares.accessType,
+      viewCount: shares.viewCount,
+      expiresAt: shares.expiresAt,
+      createdAt: shares.createdAt,
+      revokedAt: shares.revokedAt,
+    })
+    .from(shares)
+    .innerJoin(notes, eq(shares.noteId, notes.id))
+    .where(
+      and(
+        eq(shares.noteId, noteId),
+        eq(notes.userId, userId),
+      ),
+    )
+    .orderBy(desc(shares.createdAt));
+
+  return result;
 };
