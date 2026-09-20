@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useWatch } from "react-hook-form";
 import type { z } from "zod";
 
 import { createShareSchema } from "../validation";
@@ -18,7 +19,7 @@ export default function CreateShareForm({
     const {
         register,
         handleSubmit,
-        watch,
+        control,
         formState: { errors, isSubmitting },
     } = useForm<CreateShareFormValues>({
         resolver: zodResolver(createShareSchema),
@@ -29,8 +30,15 @@ export default function CreateShareForm({
         },
     });
 
-    const shareType = watch("shareType");
-    const accessType = watch("accessType");
+    const shareType = useWatch({
+        control,
+        name: "shareType",
+    });
+
+    const accessType = useWatch({
+        control,
+        name: "accessType",
+    });
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -135,8 +143,8 @@ export default function CreateShareForm({
 
                     <label
                         className={`cursor-pointer rounded-lg border p-4 transition-colors ${accessType === "password"
-                                ? "border-[#F5F5F5] bg-[#0A0A0A]"
-                                : "border-[#292929] hover:border-[#525252]"
+                            ? "border-[#F5F5F5] bg-[#0A0A0A]"
+                            : "border-[#292929] hover:border-[#525252]"
                             }`}
                     >
                         <div className="flex items-start gap-3">
