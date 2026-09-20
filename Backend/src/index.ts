@@ -41,7 +41,10 @@ app.get("/db-health", async(c)=>{
 
 serve({
   fetch: app.fetch,
-  port: 3000,
+  port: Number(process.env.PORT) || 3000,
+  hostname: "0.0.0.0",
 });
 
-console.log("Server running on http://localhost:3000");
+console.log(
+  `Server running on port ${process.env.PORT || 3000}`
+);
